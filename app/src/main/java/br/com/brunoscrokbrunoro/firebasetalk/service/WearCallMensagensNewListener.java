@@ -67,7 +67,7 @@ public class WearCallMensagensNewListener extends WearableListenerService {
 
     @Override
     public void onDataChanged(DataEventBuffer dataEventBuffer) {
-        Log.i("WearCallMensagensNewListener","onDataChanged");
+        Log.i("MensagensNewListener","onDataChanged");
         final GoogleApiClient mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Wearable.API)
                 .build();
@@ -88,9 +88,9 @@ public class WearCallMensagensNewListener extends WearableListenerService {
                     @Override
                     public void onResult(@NonNull DataApi.DataItemResult dataItemResult) {
                         if(dataItemResult.getStatus().isSuccess()){
-                            Log.v("WearCallMensagensNewListener", "DataMap successfully sent!");
+                            Log.v("MensagensNewListener", "DataMap successfully sent!");
                         }else{
-                            Log.v("WearCallMensagensNewListener", "ERROR: Failed to send DataMap to data layer");
+                            Log.v("MensagensNewListener", "ERROR: Failed to send DataMap to data layer");
                         }
                     }
                 });

@@ -55,7 +55,7 @@ public class WearCallMensagensSendListener extends WearableListenerService {
                 if(dataMap.getString("mensagem") != null) {
                     Log.i("MensangemSend",dataMap.getString("mensagem"));
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    Mensagem mensagem = new Mensagem();
+                    Mensagem mensagem = new Mensagem();c
                     mensagem.setMensagem(dataMap.getString("mensagem"));
                     if (user.getDisplayName() != null) {
                         mensagem.setUsuario(user.getDisplayName());
