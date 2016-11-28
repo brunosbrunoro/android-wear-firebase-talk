@@ -3,6 +3,12 @@ package br.com.brunoscrokbrunoro.firebasetalk.service;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -52,24 +58,104 @@ public class WearCallMensagensSendListener extends WearableListenerService {
         for (DataEvent event : dataEventBuffer) {
             if (event.getType() == DataEvent.TYPE_CHANGED) {
                 DataMap dataMap = DataMapItem.fromDataItem(event.getDataItem()).getDataMap();
-                if(dataMap.getString("mensagem") != null) {
-                    Log.i("MensangemSend",dataMap.getString("mensagem"));
+                if (dataMap.getString("mensagem") != null) {
+                    Log.i("MensangemSend", dataMap.getString("mensagem"));
                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                    Mensagem mensagem = new Mensagem();c
+                    Mensagem mensagem = new Mensagem();
                     mensagem.setMensagem(dataMap.getString("mensagem"));
-                    if (user.getDisplayName() != null) {
-                        mensagem.setUsuario(user.getDisplayName());
+                    if (mensagem.getMensagem().equals("quero doce")) {
+                        requestCandy();
                     } else {
-                        mensagem.setUsuario(user.getEmail());
+                        if (user.getDisplayName() != null) {
+                            mensagem.setUsuario(user.getDisplayName());
+                        } else {
+                            mensagem.setUsuario(user.getEmail());
+                        }
+                        mensagem.setUid(myRef.push().getKey());
+                        Map<String, Object> childUpdates = new HashMap<>();
+                        childUpdates.put(mensagem.getUid(), mensagem.toMap());
+                        myRef.updateChildren(childUpdates);
                     }
-                    mensagem.setUid(myRef.push().getKey());
-                    Map<String, Object> childUpdates = new HashMap<>();
-                    childUpdates.put(mensagem.getUid(), mensagem.toMap());
-                    myRef.updateChildren(childUpdates);
                 }
 
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
             }
         }
+    }
+    public void requestCandy(){
+        RequestQueue queue = Volley.newRequestQueue(this);
+        String url = "https://echo-firebase.firebaseio.com/devices/candy.json";
+        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        }) {
+
+
+            @Override
+            public byte[] getBody() throws com.android.volley.AuthFailureError {
+                String str = "false";
+                return str.getBytes();
+            }
+
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
+        };
+        queue.add(stringRequest);
+        stringRequest = new StringRequest(Request.Method.PUT, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        }) {
+
+
+            @Override
+            public byte[] getBody() throws com.android.volley.AuthFailureError {
+                String str = "true";
+                return str.getBytes();
+            }
+
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
+        };
+        queue.add(stringRequest);
+        stringRequest = new StringRequest(Request.Method.PUT, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            }
+        }) {
+
+
+            @Override
+            public byte[] getBody() throws com.android.volley.AuthFailureError {
+                String str = "false";
+                return str.getBytes();
+            }
+
+            public String getBodyContentType() {
+                return "application/json; charset=utf-8";
+            }
+
+        };
+        queue.add(stringRequest);
     }
 }
